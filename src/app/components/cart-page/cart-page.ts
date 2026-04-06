@@ -1,6 +1,8 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Product } from '../../models/product';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 export interface CartItem {
   product: Product;
@@ -9,8 +11,11 @@ export interface CartItem {
 
 @Component({
   selector: 'app-cart-page',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './cart-page.html',
-  styleUrls: ['./cart-page.css']
+  styleUrls: ['./cart-page.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartPage implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];

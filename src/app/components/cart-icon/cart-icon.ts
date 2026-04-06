@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
@@ -6,9 +6,11 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cart-icon',
+  standalone: true,
   imports: [MatIconModule, MatButtonModule, RouterModule, CommonModule],
   templateUrl: './cart-icon.html',
-  styleUrls: ['./cart-icon.scss']
+  styleUrls: ['./cart-icon.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartIcon implements OnInit, OnDestroy {
   cartItemCount = 0;

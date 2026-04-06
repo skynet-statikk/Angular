@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { PendingChangesService } from '../../services/pending-changes.service';
 import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -13,7 +13,8 @@ import { DialogMode } from '../../models/dialogMode';
   standalone: true,
   selector: 'app-customer-dialog',
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatInputModule, MatCheckboxModule, MatButtonModule],
-  templateUrl: './customer-dialog.html'
+  templateUrl: './customer-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerDialog implements OnDestroy {
   private dialogRef = inject(MatDialogRef<CustomerDialog>);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -7,9 +7,11 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 
 @Component({
   selector: 'app-contact-page',
+  standalone: true,
   imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule],
   templateUrl: './contact-page.html',
-  styleUrls: ['./contact-page.css']
+  styleUrls: ['./contact-page.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactPage {
   contactForm = new FormGroup({

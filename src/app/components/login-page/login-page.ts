@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,9 +9,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login-page',
+  standalone: true,
   imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './login-page.html',
-  styleUrls: ['./login-page.scss']
+  styleUrls: ['./login-page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginPage implements OnInit {
   credentials = {
