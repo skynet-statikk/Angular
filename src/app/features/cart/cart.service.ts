@@ -17,11 +17,7 @@ export class CartService {
 
     if (existingItem) {
       this.cartItems.update(items =>
-        items.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        )
+        items.map(item => (item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item))
       );
     } else {
       this.cartItems.update(items => [...items, { product, quantity }]);
@@ -38,11 +34,7 @@ export class CartService {
       return;
     }
 
-    this.cartItems.update(items =>
-      items.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
-    );
+    this.cartItems.update(items => items.map(item => (item.product.id === productId ? { ...item, quantity } : item)));
   }
 
   clearCart() {
@@ -50,9 +42,6 @@ export class CartService {
   }
 
   getSubtotal(): number {
-    return this.cartItems().reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
+    return this.cartItems().reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }
 }

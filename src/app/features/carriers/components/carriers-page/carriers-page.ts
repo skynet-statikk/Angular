@@ -26,7 +26,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
-import { ConfirmationDialog, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {
+  ConfirmationDialog,
+  ConfirmationDialogData
+} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 

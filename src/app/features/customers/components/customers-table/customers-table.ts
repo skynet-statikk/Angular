@@ -25,7 +25,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ConfirmationDialog, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {
+  ConfirmationDialog,
+  ConfirmationDialogData
+} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CustomerDialog } from '../customer-dialog/customer-dialog';
 import { DialogMode } from '../../../../core/models/dialogMode';
