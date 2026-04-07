@@ -11,8 +11,6 @@ export class CartService {
   cartItems$ = this.cartItems.asReadonly();
   cartItemCount = computed(() => this.cartItems().reduce((sum, item) => sum + item.quantity, 0));
 
-  constructor() {}
-
   addToCart(product: Product, quantity: number = 1) {
     const current = this.cartItems();
     const existingItem = current.find(item => item.product.id === product.id);

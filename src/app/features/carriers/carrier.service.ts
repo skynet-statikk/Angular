@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Carrier } from './carrier';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
@@ -11,8 +11,7 @@ export class CarrierService {
   carriers = signal<Carrier[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
-
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   loadCarriers() {
     this.loading.set(true);

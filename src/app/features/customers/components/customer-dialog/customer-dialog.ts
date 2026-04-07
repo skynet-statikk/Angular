@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { DialogMode } from '../../../../core/models/dialogMode';
   templateUrl: './customer-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomerDialog implements OnDestroy {
+export class CustomerDialog implements OnInit, OnDestroy {
   private dialogRef = inject(MatDialogRef<CustomerDialog>);
   data = inject<{ mode: DialogMode; customer?: Customer }>(MAT_DIALOG_DATA);
   dialogMode = DialogMode;
@@ -50,7 +50,7 @@ export class CustomerDialog implements OnDestroy {
     }
   );
 
-  constructor() {
+  ngOnInit() {
     if (this.data.mode === DialogMode.View) {
       this.firstName.disable();
       this.lastName.disable();

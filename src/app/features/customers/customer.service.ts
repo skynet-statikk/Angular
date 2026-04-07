@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Customer } from './customer';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, of, tap, throwError } from 'rxjs';
@@ -11,8 +11,7 @@ export class CustomerService {
   customers = signal<Customer[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
-
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   loadCustomers() {
     this.loading.set(true);
