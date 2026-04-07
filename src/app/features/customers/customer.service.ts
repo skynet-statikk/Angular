@@ -85,21 +85,19 @@ export class CustomerService {
   }
 
   deleteCustomers(ids: number[]) {
-    ids.forEach(id => {
-      this.http
-        .delete(`${this.customersUrl}/${id}`)
-        .pipe(
-          tap(() => {
-            const current = this.customers();
-            this.customers.set(current.filter(c => c.id !== id));
-          }),
-          catchError(err => {
-            console.error('Error deleting customer:', err);
-            this.error.set('Failed to delete customer');
-            return throwError(() => err);
-          })
-        )
-        .subscribe();
-    });
+    this.http
+      .delete(this.customersUrl, { body: ids })
+      .pipe(
+        tap(() => {
+          const current = this.customers();
+          this.customers.set(current.filter(c => !ids.includes(c.id)));
+        }),
+        catchError(err => {
+          console.error('Error deleting customers:', err);
+          this.error.set('Failed to delete customers');
+          return throwError(() => err);
+        })
+      )
+      .subscribe();
   }
 }
