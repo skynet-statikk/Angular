@@ -8,7 +8,13 @@
     <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
       <mat-form-field class="full-width" appearance="fill">
         <mat-label>Username</mat-label>
-        <input matInput placeholder="Enter your username" [(ngModel)]="credentials.username" required name="username" />
+        <input
+          matInput
+          placeholder="Enter your username"
+          [(ngModel)]="credentials.username"
+          required
+          name="username"
+        />
         <mat-icon matPrefix>person</mat-icon>
       </mat-form-field>
 
@@ -29,7 +35,13 @@
       <div class="error-message">{{ loginError }}</div>
       }
 
-      <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="isLoginLoading">
+      <button
+        mat-raised-button
+        color="primary"
+        class="login-button"
+        type="submit"
+        [disabled]="isLoginLoading"
+      >
         @if (!isLoginLoading) {
         <span>Sign In</span>
         } @else {

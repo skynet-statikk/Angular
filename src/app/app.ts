@@ -10,7 +10,7 @@ import { CartIcon } from './shared/components/cart-icon/cart-icon';
   selector: 'app-root',
   imports: [MatToolbarModule, MatButtonModule, ThemeSelector, RouterModule, CartIcon],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   titleService = inject(TitleService);

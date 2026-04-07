@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   effect,
-  signal
+  signal,
 } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -28,7 +28,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
 import {
   ConfirmationDialog,
-  ConfirmationDialogData
+  ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -50,11 +50,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatInputModule,
     MatDialogModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './carriers-page.html',
   styleUrls: ['./carriers-page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CarriersPage implements OnInit, AfterViewInit {
   private carrierService = inject(CarrierService);
@@ -68,8 +68,10 @@ export class CarriersPage implements OnInit, AfterViewInit {
     { key: 'trackingUrl', label: 'Tracking URL' },
     { key: 'isActive', label: 'Active' },
     { key: 'createdAt', label: 'Created' },
-    { key: 'updatedAt', label: 'Updated' }
+    { key: 'updatedAt', label: 'Updated' },
   ];
+  private readonly dateColumns = ['createdAt', 'updatedAt'];
+  private readonly booleanColumns = ['isActive'];
   displayedColumns = ['select', ...this.columns.map(c => c.key)];
   selection = new SelectionModel<Carrier>(true, []);
   dataSource = new MatTableDataSource<Carrier>();
@@ -129,7 +131,7 @@ export class CarriersPage implements OnInit, AfterViewInit {
     const ref = this.dialog.open(CarrierDialog, {
       data: { carrier: undefined },
       panelClass: 'carrier-dialog',
-      closeOnNavigation: false
+      closeOnNavigation: false,
     });
 
     this.activeDialogRef = ref as MatDialogRef<CarrierDialog>;
@@ -147,7 +149,7 @@ export class CarriersPage implements OnInit, AfterViewInit {
     const ref = this.dialog.open(CarrierDialog, {
       data: { carrier },
       panelClass: 'carrier-dialog',
-      closeOnNavigation: false
+      closeOnNavigation: false,
     });
 
     this.activeDialogRef = ref as MatDialogRef<CarrierDialog>;
@@ -177,11 +179,11 @@ export class CarriersPage implements OnInit, AfterViewInit {
       title: 'Delete Carriers',
       message: `Do you really want to delete ${this.selection.selected.length} carrier(s)?`,
       confirmText: 'Delete',
-      cancelText: 'Cancel'
+      cancelText: 'Cancel',
     };
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      data: dialogData
+      data: dialogData,
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
@@ -192,8 +194,20 @@ export class CarriersPage implements OnInit, AfterViewInit {
       });
 
       this.selection.clear();
-      this.snackBar.open(`${this.selection.selected.length} carrier(s) deleted successfully`, 'Close', { duration: 3000 });
+      this.snackBar.open(
+        `${this.selection.selected.length} carrier(s) deleted successfully`,
+        'Close',
+        { duration: 3000 }
+      );
       this.changeDetectorRef.markForCheck();
     });
+  }
+
+  isDateColumn(key: string): boolean {
+    return this.dateColumns.includes(key);
+  }
+
+  isBooleanColumn(key: string): boolean {
+    return this.booleanColumns.includes(key);
   }
 }

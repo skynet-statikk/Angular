@@ -17,32 +17,32 @@ export const routes: Routes = [
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
     runGuardsAndResolvers: 'always',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'customers/new',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
     runGuardsAndResolvers: 'always',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'customers/:id',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
     runGuardsAndResolvers: 'always',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'customers/:id/edit',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
     runGuardsAndResolvers: 'always',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   { path: 'user', component: UserPage, canActivate: [AuthGuard] },
   { path: 'products', component: ProductsPage, canActivate: [AuthGuard] },
   { path: 'cart', component: CartPage, canActivate: [AuthGuard] },
   { path: 'contact', component: ContactPage },
-  { path: 'carriers', component: CarriersPage }
+  { path: 'carriers', component: CarriersPage },
 ];

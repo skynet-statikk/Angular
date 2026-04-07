@@ -15,7 +15,7 @@ export interface CartItem {
   imports: [CommonModule, RouterModule],
   templateUrl: './cart-page.html',
   styleUrls: ['./cart-page.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartPage implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];
@@ -62,7 +62,10 @@ export class CartPage implements OnInit, OnDestroy {
   }
 
   calculateTotals(): void {
-    this.subtotal = this.cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    this.subtotal = this.cartItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
     this.total = this.subtotal + this.shipping;
   }
 

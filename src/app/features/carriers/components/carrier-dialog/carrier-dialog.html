@@ -7,7 +7,9 @@
         <mat-label>Carrier Name</mat-label>
         <input matInput formControlName="name" required />
         @if (carrierForm.get('name')?.invalid && carrierForm.get('name')?.touched) {
-        <mat-error> @if (carrierForm.get('name')?.errors?.['required']) { Carrier name is required } </mat-error>
+        <mat-error>
+          @if (carrierForm.get('name')?.errors?.['required']) { Carrier name is required }
+        </mat-error>
         }
       </mat-form-field>
 
@@ -15,7 +17,9 @@
         <mat-label>Tracking URL</mat-label>
         <input matInput formControlName="trackingUrl" required />
         @if (carrierForm.get('trackingUrl')?.invalid && carrierForm.get('trackingUrl')?.touched) {
-        <mat-error> @if (carrierForm.get('trackingUrl')?.errors?.['required']) { Tracking URL is required } </mat-error>
+        <mat-error>
+          @if (carrierForm.get('trackingUrl')?.errors?.['required']) { Tracking URL is required }
+        </mat-error>
         }
       </mat-form-field>
 

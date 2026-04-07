@@ -1,10 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Customer } from './customer';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of, tap, throwError } from 'rxjs';
+import { catchError, of, tap, throwError } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
   private customersUrl = 'api/customers';
@@ -41,7 +41,7 @@ export class CustomerService {
         })
       )
       .subscribe({
-        complete: () => this.loading.set(false)
+        complete: () => this.loading.set(false),
       });
   }
 

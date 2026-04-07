@@ -12,7 +12,9 @@ export interface CanComponentDeactivate {
 export class PendingChangesGuard implements CanDeactivate<CanComponentDeactivate> {
   private pending = inject(PendingChangesService);
 
-  canDeactivate(_component: CanComponentDeactivate): Observable<boolean> | Promise<boolean> | boolean {
+  canDeactivate(
+    _component: CanComponentDeactivate
+  ): Observable<boolean> | Promise<boolean> | boolean {
     // Reference the unused parameter to satisfy strict-checks.
     void _component;
     console.log('[PendingChangesGuard] canDeactivate invoked');

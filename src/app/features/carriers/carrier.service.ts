@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CarrierService {
   private carriersUrl = 'api/carriers';
@@ -29,7 +29,7 @@ export class CarrierService {
         })
       )
       .subscribe({
-        complete: () => this.loading.set(false)
+        complete: () => this.loading.set(false),
       });
   }
 

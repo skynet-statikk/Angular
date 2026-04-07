@@ -10,10 +10,17 @@ import { themeColors, themeModes } from '../../../core/models/theme';
 
 @Component({
   selector: 'app-theme-selector',
-  imports: [MatSelectModule, CommonModule, MatIconModule, MatRadioModule, MatMenuModule, MatButtonModule],
+  imports: [
+    MatSelectModule,
+    CommonModule,
+    MatIconModule,
+    MatRadioModule,
+    MatMenuModule,
+    MatButtonModule,
+  ],
   templateUrl: './theme-selector.html',
   styleUrl: './theme-selector.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemeSelector implements OnInit {
   themeService = inject(ThemeService);

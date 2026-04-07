@@ -12,9 +12,16 @@ import { DialogMode } from '../../../../core/models/dialogMode';
 @Component({
   standalone: true,
   selector: 'app-customer-dialog',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatInputModule, MatCheckboxModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule,
+  ],
   templateUrl: './customer-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerDialog implements OnInit, OnDestroy {
   private dialogRef = inject(MatDialogRef<CustomerDialog>);
@@ -26,27 +33,27 @@ export class CustomerDialog implements OnInit, OnDestroy {
 
   firstName = new FormControl(this.data.customer?.firstName ?? '', {
     nonNullable: true,
-    validators: Validators.required
+    validators: Validators.required,
   });
 
   lastName = new FormControl(this.data.customer?.lastName ?? '', {
     nonNullable: true,
-    validators: Validators.required
+    validators: Validators.required,
   });
 
   email = new FormControl(this.data.customer?.email ?? '', {
     nonNullable: true,
-    validators: [Validators.required, Validators.email]
+    validators: [Validators.required, Validators.email],
   });
 
   phoneNumber = new FormControl(this.data.customer?.phoneNumber ?? '', {
-    nonNullable: true
+    nonNullable: true,
   });
 
   isActive = new FormControl(
     { value: this.data.customer?.isActive ?? true, disabled: this.data.mode === DialogMode.View },
     {
-      nonNullable: true
+      nonNullable: true,
     }
   );
 
@@ -63,7 +70,8 @@ export class CustomerDialog implements OnInit, OnDestroy {
     this.dialogRef.disableClose = false;
 
     const markDisable = () => {
-      const anyDirty = this.firstName.dirty || this.lastName.dirty || this.email.dirty || this.isActive.dirty;
+      const anyDirty =
+        this.firstName.dirty || this.lastName.dirty || this.email.dirty || this.isActive.dirty;
       this.dialogRef.disableClose = anyDirty;
       this.pendingService.setPending(anyDirty);
     };
@@ -90,7 +98,7 @@ export class CustomerDialog implements OnInit, OnDestroy {
       lastName: this.lastName.value,
       email: this.email.value,
       isActive: this.isActive.value,
-      phoneNumber: this.phoneNumber.value
+      phoneNumber: this.phoneNumber.value,
     });
   }
 

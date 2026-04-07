@@ -8,17 +8,23 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 @Component({
   selector: 'app-contact-page',
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule],
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './contact-page.html',
   styleUrls: ['./contact-page.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactPage {
   contactForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     subject: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    message: new FormControl('', [Validators.required, Validators.minLength(10)])
+    message: new FormControl('', [Validators.required, Validators.minLength(10)]),
   });
 
   onSubmit() {

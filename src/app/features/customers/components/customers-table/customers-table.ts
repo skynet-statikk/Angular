@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   effect,
-  signal
+  signal,
 } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -27,7 +27,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {
   ConfirmationDialog,
-  ConfirmationDialogData
+  ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CustomerDialog } from '../customer-dialog/customer-dialog';
@@ -53,11 +53,11 @@ import { PendingChangesService } from '../../../../core/services/pending-changes
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './customers-table.html',
   styleUrls: ['./customers-table.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomersTable implements OnInit, AfterViewInit {
   private customerService = inject(CustomerService);
@@ -74,7 +74,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     { key: 'lastName', label: 'Last Name' },
     { key: 'email', label: 'Email' },
     { key: 'phoneNumber', label: 'Phone Number' },
-    { key: 'isActive', label: 'Active' }
+    { key: 'isActive', label: 'Active' },
   ];
   displayedColumns = ['select', ...this.columns.map(c => c.key)];
   selection = new SelectionModel<Customer>(true, []);
@@ -106,7 +106,12 @@ export class CustomersTable implements OnInit, AfterViewInit {
   readonly routeEffect = effect(() => {
     const rs = this.routeState();
     const customers = this.customers();
-    console.log('[CustomersTable] routeEffect run, routeState=', rs, 'dialogOpen=', this.dialogOpen());
+    console.log(
+      '[CustomersTable] routeEffect run, routeState=',
+      rs,
+      'dialogOpen=',
+      this.dialogOpen()
+    );
 
     if (this.dialogOpen()) return;
 
@@ -196,7 +201,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     const ref = this.dialog.open(CustomerDialog, {
       panelClass: ['customer-dialog', 'mode-view'],
       data: { mode: DialogMode.View, customer },
-      closeOnNavigation: false
+      closeOnNavigation: false,
     });
 
     this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
@@ -213,7 +218,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     const ref = this.dialog.open(CustomerDialog, {
       data: { mode: DialogMode.Edit, customer },
       panelClass: 'customer-dialog',
-      closeOnNavigation: false
+      closeOnNavigation: false,
     });
 
     this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
@@ -230,7 +235,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     const ref = this.dialog.open(CustomerDialog, {
       data: { mode: DialogMode.Add },
       panelClass: 'customer-dialog',
-      closeOnNavigation: false
+      closeOnNavigation: false,
     });
 
     this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
@@ -258,7 +263,12 @@ export class CustomersTable implements OnInit, AfterViewInit {
     if (typeof inst.hasUnsavedChanges === 'function') {
       unsaved = inst.hasUnsavedChanges();
     } else {
-      unsaved = !!(inst.firstName?.dirty || inst.lastName?.dirty || inst.email?.dirty || inst.isActive?.dirty);
+      unsaved = !!(
+        inst.firstName?.dirty ||
+        inst.lastName?.dirty ||
+        inst.email?.dirty ||
+        inst.isActive?.dirty
+      );
     }
     if (!unsaved) return true;
     const confirmLeave = window.confirm('You have unsaved changes. Leave without saving?');
@@ -291,11 +301,11 @@ export class CustomersTable implements OnInit, AfterViewInit {
       title: 'Delete customers',
       message: 'Do you really want to delete these customers?',
       confirmText: 'Delete',
-      cancelText: 'Cancel'
+      cancelText: 'Cancel',
     };
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      data: dialogData
+      data: dialogData,
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {

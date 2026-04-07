@@ -50,8 +50,8 @@
       <ng-container [matColumnDef]="column.key">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.label }}</th>
         <td mat-cell *matCellDef="let carrier">
-          @if (column.key === 'createdAt' || column.key === 'updatedAt') { {{ carrier[column.key] | date:'short' }} } @else
-          if (column.key === 'isActive') {
+          @if (isDateColumn(column.key)) { {{ carrier[column.key] | date:'short' }} } @else if
+          (isBooleanColumn(column.key)) {
           <mat-checkbox [checked]="carrier[column.key]" disabled></mat-checkbox>
           } @else { {{ carrier[column.key] }} }
         </td>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Theme, ThemeColor, themeColors, ThemeMode, themeModes } from '../models/theme';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private readonly storageKey = 'theme';

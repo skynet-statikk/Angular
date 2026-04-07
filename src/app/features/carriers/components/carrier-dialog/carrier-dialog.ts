@@ -23,11 +23,11 @@ export interface CarrierDialogData {
     MatInputModule,
     MatCheckboxModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './carrier-dialog.html',
   styleUrls: ['./carrier-dialog.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CarrierDialog implements OnInit {
   private fb = inject(FormBuilder);
@@ -46,7 +46,7 @@ export class CarrierDialog implements OnInit {
     this.carrierForm = this.fb.group({
       name: [this.data.carrier?.name || '', Validators.required],
       trackingUrl: [this.data.carrier?.trackingUrl || '', Validators.required],
-      isActive: [this.data.carrier?.isActive || true]
+      isActive: [this.data.carrier?.isActive || true],
     });
 
     // Listen for form changes to track unsaved changes
@@ -63,7 +63,7 @@ export class CarrierDialog implements OnInit {
         ...formData,
         id: this.data.carrier?.id || 0,
         createdAt: this.data.carrier?.createdAt || new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       this.dialogRef.close(carrierData);

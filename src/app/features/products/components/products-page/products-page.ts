@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule],
   templateUrl: './products-page.html',
   styleUrls: ['./products-page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsPage implements OnInit {
   private productService = inject(ProductService);
@@ -38,7 +38,7 @@ export class ProductsPage implements OnInit {
         this.error.set('Failed to load products');
         this.loading.set(false);
         console.error('Error loading products:', err);
-      }
+      },
     });
   }
 
@@ -70,7 +70,7 @@ export class ProductsPage implements OnInit {
       // Add new product to cart
       cartItems.push({
         product: product,
-        quantity: 1
+        quantity: 1,
       });
     }
 

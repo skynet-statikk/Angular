@@ -12,7 +12,7 @@ export const themeColors = [
   'spring-green',
   'azure',
   'violet',
-  'rose'
+  'rose',
 ];
 export type ThemeColor = (typeof themeColors)[number];
 

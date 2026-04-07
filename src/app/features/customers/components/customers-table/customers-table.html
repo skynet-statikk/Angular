@@ -1,7 +1,12 @@
 <div>
   <div>
     <mat-form-field>
-      <input matInput placeholder="Search" [(ngModel)]="filterValue" (input)="applyFilter(filterValue)" />
+      <input
+        matInput
+        placeholder="Search"
+        [(ngModel)]="filterValue"
+        (input)="applyFilter(filterValue)"
+      />
     </mat-form-field>
 
     <button mat-icon-button (click)="addCustomer()">

@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>
-  @switch (data.mode) { @case (dialogMode.Add) { Add Customer } @case (dialogMode.Edit) { Edit Customer } @case
-  (dialogMode.View) { View Customer } }
+  @switch (data.mode) { @case (dialogMode.Add) { Add Customer } @case (dialogMode.Edit) { Edit
+  Customer } @case (dialogMode.View) { View Customer } }
 </h2>
 
 <mat-dialog-content>
@@ -44,7 +44,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-stroked-button (click)="cancel()">@if (data.mode === dialogMode.View) { Close } @else { Cancel }</button>
+  <button mat-stroked-button (click)="cancel()">
+    @if (data.mode === dialogMode.View) { Close } @else { Cancel }
+  </button>
 
   @if (data.mode !== dialogMode.View) {
   <button mat-flat-button color="warn" [disabled]="!isValid()" (click)="save()">

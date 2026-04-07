@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   imports: [MatIconModule, MatButtonModule, RouterModule, CommonModule],
   templateUrl: './cart-icon.html',
   styleUrls: ['./cart-icon.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartIcon implements OnInit, OnDestroy {
   cartItemCount = 0;
@@ -30,7 +30,10 @@ export class CartIcon implements OnInit, OnDestroy {
       const cartData = localStorage.getItem('shoppingCart');
       if (cartData) {
         const cartItems = JSON.parse(cartData);
-        this.cartItemCount = cartItems.reduce((total: number, item: { quantity: number }) => total + item.quantity, 0);
+        this.cartItemCount = cartItems.reduce(
+          (total: number, item: { quantity: number }) => total + item.quantity,
+          0
+        );
       } else {
         this.cartItemCount = 0;
       }

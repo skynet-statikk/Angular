@@ -6,14 +6,14 @@ import { Product } from '../app/features/products/product';
 import { setupWorker } from 'msw/browser';
 
 let customers: Customer[] = [...customersJson];
-let products: Product[] = productsJson.map(p => ({
+const products: Product[] = productsJson.map(p => ({
   id: p.id,
   title: p.title,
   description: p.description,
   price: p.price,
   category: 'Electronics',
   image: p.imageUrl,
-  rating: { rate: 4.5, count: 100 }
+  rating: { rate: 4.5, count: 100 },
 }));
 
 export const handlers = [
@@ -60,7 +60,7 @@ export const handlers = [
   http.get('/api/products/:id', ({ params }) => {
     const product = products.find(p => p.id === Number(params['id']));
     return product ? HttpResponse.json(product) : new HttpResponse(null, { status: 404 });
-  })
+  }),
 ];
 
 export const worker = setupWorker(...handlers);
