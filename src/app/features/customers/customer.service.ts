@@ -1,7 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Customer } from './customer';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of, tap, throwError } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -56,7 +57,7 @@ export class CustomerService {
         catchError(err => {
           console.error('Error adding customer:', err);
           this.error.set('Failed to add customer');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();
@@ -78,7 +79,7 @@ export class CustomerService {
         catchError(err => {
           console.error('Error updating customer:', err);
           this.error.set('Failed to update customer');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();
@@ -95,7 +96,7 @@ export class CustomerService {
         catchError(err => {
           console.error('Error deleting customers:', err);
           this.error.set('Failed to delete customers');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();

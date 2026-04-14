@@ -51,7 +51,7 @@ describe('ProductService', () => {
   });
 
   it('should handle API error', () => {
-    let receivedError: any;
+    let receivedError: unknown;
 
     service.loadProducts().subscribe({
       next: () => {

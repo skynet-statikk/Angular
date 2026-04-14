@@ -108,7 +108,9 @@ describe('CartPage', () => {
   });
 
   it('should checkout with cart items', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {
+      /* empty */
+    });
     component.cartItems = [{ product: mockProduct, quantity: 1 }];
     component.checkout();
     expect(alertSpy).toHaveBeenCalledWith('Checkout functionality would be implemented here!');
@@ -118,7 +120,9 @@ describe('CartPage', () => {
   });
 
   it('should not checkout when cart is empty', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {
+      /* empty */
+    });
     component.checkout();
     expect(alertSpy).not.toHaveBeenCalled();
     alertSpy.mockRestore();

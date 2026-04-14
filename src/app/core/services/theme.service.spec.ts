@@ -1,5 +1,5 @@
 import { ThemeService } from './theme.service';
-import { ThemeColor, ThemeMode, themeModes, themeColors } from '../models/theme';
+import { ThemeColor } from '../models/theme';
 
 describe('ThemeService', () => {
   let service: ThemeService;

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal, Signal, WritableSignal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { CustomersTable } from './customers-table';
 import { CustomerService } from '../../customer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterState } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router, RouterState, Event as RouterEvent } from '@angular/router';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
-import { of, Subject, Observable } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Customer } from '../../customer';
 import { DialogMode } from '../../../../core/models/dialogMode';
 
@@ -19,7 +19,7 @@ describe('CustomersTable', () => {
   let route: ActivatedRoute;
   let router: Partial<Router>;
   let pendingService: Partial<PendingChangesService>;
-  let routerEvents: Subject<any>;
+  let routerEvents: Subject<RouterEvent>;
 
   const mockCustomer: Customer = {
     id: 1,
@@ -31,7 +31,7 @@ describe('CustomersTable', () => {
   };
 
   beforeEach(async () => {
-    routerEvents = new Subject<any>();
+    routerEvents = new Subject<RouterEvent>();
 
     const customersSignal = signal<Customer[]>([]);
     const loadingSignal = signal(false);
@@ -210,7 +210,8 @@ describe('CustomersTable', () => {
       close: vi.fn(),
       componentInstance: {},
     };
-    (dialog.open as any).mockReturnValue(dialogRefMock);
+    const spy = vi.spyOn(dialog, 'open');
+    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
     component.openViewDialog(mockCustomer);
     expect(dialog.open).toHaveBeenCalledWith(
       expect.anything(),
@@ -232,7 +233,8 @@ describe('CustomersTable', () => {
       close: vi.fn(),
       componentInstance: {},
     };
-    (dialog.open as any).mockReturnValue(dialogRefMock);
+    const spy = vi.spyOn(dialog, 'open');
+    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
     component.openEditDialog(mockCustomer);
     expect(dialog.open).toHaveBeenCalledWith(
       expect.anything(),
@@ -254,7 +256,8 @@ describe('CustomersTable', () => {
       close: vi.fn(),
       componentInstance: {},
     };
-    (dialog.open as any).mockReturnValue(dialogRefMock);
+    const spy = vi.spyOn(dialog, 'open');
+    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
     component.openAddDialog();
     expect(dialog.open).toHaveBeenCalledWith(
       expect.anything(),
@@ -274,7 +277,8 @@ describe('CustomersTable', () => {
       afterClosed: () => of(true),
       close: vi.fn(),
     };
-    (dialog.open as any).mockReturnValue(dialogRefMock);
+    const spy = vi.spyOn(dialog, 'open');
+    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
     component.selection.select(mockCustomer);
     component.deleteCustomers();
     expect(dialog.open).toHaveBeenCalled();
@@ -289,7 +293,7 @@ describe('CustomersTable', () => {
       close: vi.fn(),
       componentInstance: {},
     };
-    (component as any)['activeDialogRef'] = mockDialogRef;
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
     expect(component.canDeactivate()).toBe(true);
   });
 
@@ -301,7 +305,7 @@ describe('CustomersTable', () => {
         hasUnsavedChanges: () => true,
       },
     };
-    (component as any)['activeDialogRef'] = mockDialogRef;
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
     expect(component.canDeactivate()).toBe(false);
     confirmSpy.mockRestore();
   });
@@ -314,7 +318,7 @@ describe('CustomersTable', () => {
         hasUnsavedChanges: () => true,
       },
     };
-    (component as any)['activeDialogRef'] = mockDialogRef;
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
     expect(component.canDeactivate()).toBe(true);
     confirmSpy.mockRestore();
   });

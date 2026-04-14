@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Carrier } from './carrier';
 import { HttpClient } from '@angular/common/http';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class CarrierService {
           console.error('Error loading carriers:', err);
           this.error.set('Failed to load carriers');
           this.loading.set(false);
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe({
@@ -44,7 +44,7 @@ export class CarrierService {
         catchError(err => {
           console.error('Error adding carrier:', err);
           this.error.set('Failed to add carrier');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();
@@ -66,7 +66,7 @@ export class CarrierService {
         catchError(err => {
           console.error('Error updating carrier:', err);
           this.error.set('Failed to update carrier');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();
@@ -83,7 +83,7 @@ export class CarrierService {
         catchError(err => {
           console.error('Error deleting carrier:', err);
           this.error.set('Failed to delete carrier');
-          return throwError(() => err);
+          return EMPTY;
         })
       )
       .subscribe();
