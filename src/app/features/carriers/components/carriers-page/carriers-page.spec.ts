@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { CarriersPage } from './carriers-page';
 import { CarrierService } from '../../carrier.service';
+import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -133,20 +134,6 @@ describe('CarriersPage', () => {
     expect(component.isBooleanColumn('name')).toBe(false);
   });
 
-  it.skip('should call addCarrier method', () => {
-    // Skip due to Material Dialog mock complexity
-    component.addCarrier();
-    expect(dialog.open).toHaveBeenCalled();
-  });
-
-  it.skip('should edit when one carrier selected', () => {
-    // Skip due to Material Dialog mock complexity
-    component.dataSource.data = [mockCarrier];
-    component.selection.select(mockCarrier);
-    component.editCarrier();
-    expect(dialog.open).toHaveBeenCalled();
-  });
-
   it('should not edit when no carrier selected', () => {
     component.editCarrier();
     expect(dialog.open).not.toHaveBeenCalled();
@@ -161,16 +148,108 @@ describe('CarriersPage', () => {
     expect(dialog.open).not.toHaveBeenCalled();
   });
 
-  it.skip('should delete when carriers selected', () => {
-    // Skip due to Material Dialog mock complexity
-    component.dataSource.data = [mockCarrier];
-    component.selection.select(mockCarrier);
-    component.deleteCarriers();
-    expect(carrierService.deleteCarrier).toHaveBeenCalled();
-  });
-
   it('should not delete when no carriers selected', () => {
     component.deleteCarriers();
     expect(carrierService.deleteCarrier).not.toHaveBeenCalled();
+  });
+});
+
+describe('CarriersPage - Dialog Methods', () => {
+  let component: CarriersPage;
+  let carrierService: Partial<CarrierService>;
+  let snackBar: Partial<MatSnackBar>;
+
+  const mockCarrier: Carrier = {
+    id: 1,
+    name: 'Test Carrier',
+    trackingUrl: 'https://example.com/tracking',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-02'),
+  };
+
+  beforeEach(async () => {
+    const carriersSignal = signal<Carrier[]>([]);
+    const loadingSignal = signal(false);
+    const errorSignal = signal<string | null>(null);
+
+    carrierService = {
+      loadCarriers: vi.fn(),
+      addCarrier: vi.fn(),
+      updateCarrier: vi.fn(),
+      deleteCarrier: vi.fn(),
+      carriers: carriersSignal,
+      loading: loadingSignal,
+      error: errorSignal,
+    };
+
+    snackBar = {
+      open: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [CarriersPage],
+      providers: [
+        { provide: CarrierService, useValue: carrierService },
+        { provide: MatSnackBar, useValue: snackBar },
+        { provide: MatDialog, useValue: { open: vi.fn() } },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(CarriersPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should call addCarrier method', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(undefined),
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.addCarrier();
+    expect(openSpy).toHaveBeenCalledWith(
+      CarrierDialog,
+      expect.objectContaining({
+        data: { carrier: undefined },
+        panelClass: 'carrier-dialog',
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should edit when one carrier selected', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(undefined),
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.dataSource.data = [mockCarrier];
+    component.selection.select(mockCarrier);
+    component.editCarrier();
+    expect(openSpy).toHaveBeenCalledWith(
+      CarrierDialog,
+      expect.objectContaining({
+        data: { carrier: mockCarrier },
+        panelClass: 'carrier-dialog',
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should delete when carriers selected', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(true),
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.dataSource.data = [mockCarrier];
+    component.selection.select(mockCarrier);
+    component.deleteCarriers();
+    expect(openSpy).toHaveBeenCalled();
+    expect(carrierService.deleteCarrier).toHaveBeenCalled();
   });
 });

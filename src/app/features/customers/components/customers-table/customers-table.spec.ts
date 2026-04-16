@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { CustomersTable } from './customers-table';
 import { CustomerService } from '../../customer.service';
+import { CustomerDialog } from '../customer-dialog/customer-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterState, Event as RouterEvent } from '@angular/router';
@@ -203,87 +204,6 @@ describe('CustomersTable', () => {
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it.skip('should call openViewDialog', () => {
-    // Skip due to Material Dialog mock complexity
-    const dialogRefMock = {
-      afterClosed: () => of(undefined),
-      close: vi.fn(),
-      componentInstance: {},
-    };
-    const spy = vi.spyOn(dialog, 'open');
-    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
-    component.openViewDialog(mockCustomer);
-    expect(dialog.open).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        data: expect.objectContaining({
-          mode: DialogMode.View,
-          customer: mockCustomer,
-        }),
-        panelClass: ['customer-dialog', 'mode-view'],
-        closeOnNavigation: false,
-      })
-    );
-  });
-
-  it.skip('should call openEditDialog', () => {
-    // Skip due to Material Dialog mock complexity
-    const dialogRefMock = {
-      afterClosed: () => of(undefined),
-      close: vi.fn(),
-      componentInstance: {},
-    };
-    const spy = vi.spyOn(dialog, 'open');
-    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
-    component.openEditDialog(mockCustomer);
-    expect(dialog.open).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        data: expect.objectContaining({
-          mode: DialogMode.Edit,
-          customer: mockCustomer,
-        }),
-        panelClass: 'customer-dialog',
-        closeOnNavigation: false,
-      })
-    );
-  });
-
-  it.skip('should call openAddDialog', () => {
-    // Skip due to Material Dialog mock complexity
-    const dialogRefMock = {
-      afterClosed: () => of(undefined),
-      close: vi.fn(),
-      componentInstance: {},
-    };
-    const spy = vi.spyOn(dialog, 'open');
-    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
-    component.openAddDialog();
-    expect(dialog.open).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        data: expect.objectContaining({
-          mode: DialogMode.Add,
-        }),
-        panelClass: 'customer-dialog',
-        closeOnNavigation: false,
-      })
-    );
-  });
-
-  it.skip('should call deleteCustomers and show confirmation dialog', () => {
-    // Skip due to Material Dialog mock complexity
-    const dialogRefMock = {
-      afterClosed: () => of(true),
-      close: vi.fn(),
-    };
-    const spy = vi.spyOn(dialog, 'open');
-    (spy as ReturnType<typeof vi.spyOn>).mockReturnValue(dialogRefMock);
-    component.selection.select(mockCustomer);
-    component.deleteCustomers();
-    expect(dialog.open).toHaveBeenCalled();
-  });
-
   it('should return true from canDeactivate when no active dialog', () => {
     expect(component.canDeactivate()).toBe(true);
   });
@@ -321,5 +241,176 @@ describe('CustomersTable', () => {
     (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
     expect(component.canDeactivate()).toBe(true);
     confirmSpy.mockRestore();
+  });
+});
+
+describe('CustomersTable - Dialog Methods', () => {
+  let component: CustomersTable;
+  let customerService: Partial<CustomerService>;
+  let snackBar: Partial<MatSnackBar>;
+  let route: ActivatedRoute;
+  let router: Partial<Router>;
+  let pendingService: Partial<PendingChangesService>;
+  let routerEvents: Subject<RouterEvent>;
+
+  const mockCustomer: Customer = {
+    id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    phoneNumber: '123-456-7890',
+    isActive: true,
+  };
+
+  beforeEach(async () => {
+    routerEvents = new Subject<RouterEvent>();
+
+    const customersSignal = signal<Customer[]>([]);
+    const loadingSignal = signal(false);
+    const errorSignal = signal<string | null>(null);
+
+    customerService = {
+      loadCustomers: vi.fn(),
+      addCustomer: vi.fn(),
+      updateCustomer: vi.fn(),
+      deleteCustomers: vi.fn(),
+      customers: customersSignal,
+      loading: loadingSignal,
+      error: errorSignal,
+    };
+
+    snackBar = {
+      open: vi.fn(),
+    };
+
+    const routeSnapshot = {
+      paramMap: { get: () => null },
+      url: [],
+      firstChild: null,
+    };
+
+    route = {
+      snapshot: routeSnapshot,
+    } as unknown as ActivatedRoute;
+
+    const routerState = {
+      snapshot: {
+        root: {
+          firstChild: null,
+          paramMap: { get: () => null },
+          url: [],
+        },
+      },
+    };
+
+    router = {
+      navigate: vi.fn(),
+      routerState: routerState as unknown as RouterState,
+      events: routerEvents.asObservable(),
+    };
+
+    pendingService = {
+      clear: vi.fn(),
+      clearActiveDialog: vi.fn(),
+      setActiveDialog: vi.fn(),
+      setPending: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [CustomersTable],
+      providers: [
+        { provide: CustomerService, useValue: customerService },
+        { provide: MatSnackBar, useValue: snackBar },
+        { provide: MatDialog, useValue: { open: vi.fn() } },
+        { provide: ActivatedRoute, useValue: route },
+        { provide: Router, useValue: router },
+        { provide: PendingChangesService, useValue: pendingService },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(CustomersTable);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should call openViewDialog', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(undefined),
+      close: vi.fn(),
+      componentInstance: {},
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.openViewDialog(mockCustomer);
+    expect(openSpy).toHaveBeenCalledWith(
+      CustomerDialog,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          mode: DialogMode.View,
+          customer: mockCustomer,
+        }),
+        panelClass: ['customer-dialog', 'mode-view'],
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should call openEditDialog', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(undefined),
+      close: vi.fn(),
+      componentInstance: {},
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.openEditDialog(mockCustomer);
+    expect(openSpy).toHaveBeenCalledWith(
+      CustomerDialog,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          mode: DialogMode.Edit,
+          customer: mockCustomer,
+        }),
+        panelClass: 'customer-dialog',
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should call openAddDialog', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(undefined),
+      close: vi.fn(),
+      componentInstance: {},
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.openAddDialog();
+    expect(openSpy).toHaveBeenCalledWith(
+      CustomerDialog,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          mode: DialogMode.Add,
+        }),
+        panelClass: 'customer-dialog',
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should call deleteCustomers and show confirmation dialog', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(true),
+      close: vi.fn(),
+    };
+    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.selection.select(mockCustomer);
+    component.deleteCustomers();
+    expect(openSpy).toHaveBeenCalled();
   });
 });

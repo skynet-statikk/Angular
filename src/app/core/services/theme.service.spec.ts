@@ -1,16 +1,38 @@
 import { ThemeService } from './theme.service';
-import { ThemeColor } from '../models/theme';
+import { ThemeColor, ThemeMode } from '../models/theme';
+
+// Mock localStorage before creating the service
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: vi.fn(() => {
+      store = {};
+    }),
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
 
 describe('ThemeService', () => {
   let service: ThemeService;
 
   beforeEach(() => {
+    vi.clearAllMocks();
+    localStorageMock.clear();
     service = new ThemeService();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    localStorage.clear();
   });
 
   it('should be created', () => {
@@ -22,42 +44,45 @@ describe('ThemeService', () => {
     expect(service.currentTheme.color).toBe('blue');
   });
 
-  it.skip('should set theme color', () => {
-    // Skipping due to service implementation
+  it('should set theme color', () => {
+    service.setThemeColor('purple' as ThemeColor);
+    expect(service.currentTheme.color).toBe('purple');
+    expect(localStorageMock.setItem).toHaveBeenCalled();
   });
 
-  it.skip('should set theme mode', () => {
-    // Skipping due to service implementation
+  it('should set theme mode', () => {
+    service.setThemeMode('dark' as ThemeMode);
+    expect(service.currentTheme.mode).toBe('dark');
+    expect(localStorageMock.setItem).toHaveBeenCalled();
   });
 
-  it.skip('should load theme from localStorage when available', () => {
-    // Skipping due to service implementation
+  it('should load theme from localStorage when available', () => {
+    const savedTheme = { mode: 'dark', color: 'green' };
+    localStorageMock.getItem.mockReturnValue(JSON.stringify(savedTheme));
+
+    const testService = new ThemeService();
+    testService.loadTheme();
+
+    expect(testService.currentTheme.mode).toBe('dark');
+    expect(testService.currentTheme.color).toBe('green');
   });
 
   it('should apply default theme when localStorage is empty', () => {
-    const localStorageGetSpy = vi.spyOn(localStorage, 'getItem');
-
-    localStorageGetSpy.mockReturnValue(null);
+    localStorageMock.getItem.mockReturnValue(null);
 
     service.loadTheme();
 
     expect(service.currentTheme.mode).toBe('light');
     expect(service.currentTheme.color).toBe('blue');
-
-    localStorageGetSpy.mockRestore();
   });
 
   it('should handle invalid JSON in localStorage gracefully', () => {
-    const localStorageGetSpy = vi.spyOn(localStorage, 'getItem');
-
-    localStorageGetSpy.mockReturnValue('invalid json');
+    localStorageMock.getItem.mockReturnValue('invalid json');
 
     service.loadTheme();
 
     expect(service.currentTheme.mode).toBe('light');
     expect(service.currentTheme.color).toBe('blue');
-
-    localStorageGetSpy.mockRestore();
   });
 
   it('should remove all theme classes before applying new theme', () => {
@@ -65,11 +90,13 @@ describe('ThemeService', () => {
     service.setThemeColor('green' as ThemeColor);
   });
 
-  it.skip('should persist theme after setting color', () => {
-    // Skipping due to service implementation
+  it('should persist theme after setting color', () => {
+    service.setThemeColor('green' as ThemeColor);
+    expect(localStorageMock.setItem).toHaveBeenCalled();
   });
 
-  it.skip('should persist theme after setting mode', () => {
-    // Skipping due to service implementation
+  it('should persist theme after setting mode', () => {
+    service.setThemeMode('dark' as ThemeMode);
+    expect(localStorageMock.setItem).toHaveBeenCalled();
   });
 });
