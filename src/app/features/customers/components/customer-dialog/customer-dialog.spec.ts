@@ -97,3 +97,49 @@ describe('CustomerDialog', () => {
     expect(component.hasUnsavedChanges()).toBe(true);
   });
 });
+
+describe('CustomerDialog View Mode', () => {
+  let component: CustomerDialog;
+  let fixture: ComponentFixture<CustomerDialog>;
+  let dialogRefSpy: Partial<MatDialogRef<CustomerDialog>>;
+  let pendingService: Partial<PendingChangesService>;
+
+  beforeEach(async () => {
+    dialogRefSpy = {
+      close: jest.fn(),
+      disableClose: false,
+    };
+    pendingService = {
+      setPending: jest.fn(),
+      clear: jest.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [CustomerDialog],
+      providers: [
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: { mode: DialogMode.View, customer: { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', phoneNumber: '123', isActive: true } },
+        },
+        { provide: PendingChangesService, useValue: pendingService },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CustomerDialog);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should disable all controls in View mode', () => {
+    expect(component.firstName.disabled).toBe(true);
+    expect(component.lastName.disabled).toBe(true);
+    expect(component.email.disabled).toBe(true);
+    expect(component.isActive.disabled).toBe(true);
+    expect(component.phoneNumber.disabled).toBe(true);
+  });
+});

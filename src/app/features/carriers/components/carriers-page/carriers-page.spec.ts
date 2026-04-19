@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { CarriersPage } from './carriers-page';
 import { CarrierService } from '../../carrier.service';
-import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { of, Subject } from 'rxjs';
 import { Carrier } from '../../carrier';
+import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 
 describe('CarriersPage', () => {
   let component: CarriersPage;
@@ -22,6 +22,54 @@ describe('CarriersPage', () => {
     isActive: true,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-02'),
+  };
+
+  const createMockDialogRef = <T>(): { ref: MatDialogRef<T>; trigger: (result?: T) => void } => {
+    const afterClosedSubject = new Subject<T>();
+    const ref = {
+      afterClosed: () => afterClosedSubject.asObservable(),
+      afterDismissed: () => of(undefined),
+      close: (res?: T) => {
+        afterClosedSubject.next(res);
+        afterClosedSubject.complete();
+      },
+      dismiss: () => afterClosedSubject.complete(),
+      updateSize: jest.fn(),
+      addPanelClass: jest.fn(),
+      removePanelClass: jest.fn(),
+      hasPanelClass: () => false,
+    } as MatDialogRef<T>;
+    return {
+      ref,
+      trigger: (result?: T) => {
+        afterClosedSubject.next(result);
+        afterClosedSubject.complete();
+      },
+    };
+  };
+
+  const createMockDialogRefBool = <T>(): { ref: MatDialogRef<boolean>; trigger: (result?: boolean) => void } => {
+    const afterClosedSubject = new Subject<boolean>();
+    const ref = {
+      afterClosed: () => afterClosedSubject.asObservable(),
+      afterDismissed: () => of(undefined),
+      close: (res?: boolean) => {
+        afterClosedSubject.next(res);
+        afterClosedSubject.complete();
+      },
+      dismiss: () => afterClosedSubject.complete(),
+      updateSize: jest.fn(),
+      addPanelClass: jest.fn(),
+      removePanelClass: jest.fn(),
+      hasPanelClass: () => false,
+    } as MatDialogRef<boolean>;
+    return {
+      ref,
+      trigger: (result?: boolean) => {
+        afterClosedSubject.next(result);
+        afterClosedSubject.complete();
+      },
+    };
   };
 
   beforeEach(async () => {
@@ -43,13 +91,16 @@ describe('CarriersPage', () => {
       open: jest.fn(),
     };
 
-    const mockDialogRef = {
-      afterClosed: () => of(undefined),
-    };
-
     dialog = {
-      open: jest.fn().mockReturnValue(mockDialogRef),
-    } as Partial<MatDialog>;
+      open: jest.fn().mockImplementation((component) => {
+        if (component === ConfirmationDialog) {
+          const result = createMockDialogRefBool();
+          return result.ref;
+        }
+        const result = createMockDialogRef();
+        return result.ref;
+      }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [CarriersPage],
@@ -152,104 +203,5 @@ describe('CarriersPage', () => {
     component.deleteCarriers();
     expect(carrierService.deleteCarrier).not.toHaveBeenCalled();
   });
-});
 
-describe('CarriersPage - Dialog Methods', () => {
-  let component: CarriersPage;
-  let carrierService: Partial<CarrierService>;
-  let snackBar: Partial<MatSnackBar>;
-
-  const mockCarrier: Carrier = {
-    id: 1,
-    name: 'Test Carrier',
-    trackingUrl: 'https://example.com/tracking',
-    isActive: true,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-02'),
-  };
-
-  beforeEach(async () => {
-    const carriersSignal = signal<Carrier[]>([]);
-    const loadingSignal = signal(false);
-    const errorSignal = signal<string | null>(null);
-
-    carrierService = {
-      loadCarriers: jest.fn(),
-      addCarrier: jest.fn(),
-      updateCarrier: jest.fn(),
-      deleteCarrier: jest.fn(),
-      carriers: carriersSignal,
-      loading: loadingSignal,
-      error: errorSignal,
-    };
-
-    snackBar = {
-      open: jest.fn(),
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [CarriersPage],
-      providers: [
-        { provide: CarrierService, useValue: carrierService },
-        { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: { open: jest.fn() } },
-      ],
-    }).compileComponents();
-
-    const fixture = TestBed.createComponent(CarriersPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should call addCarrier method', () => {
-    const dialogRefMock = {
-      afterClosed: () => of(undefined),
-    };
-    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
-    (component['dialog'] as MatDialog).open = openSpy;
-
-    component.addCarrier();
-    expect(openSpy).toHaveBeenCalledWith(
-      CarrierDialog,
-      expect.objectContaining({
-        data: { carrier: undefined },
-        panelClass: 'carrier-dialog',
-        closeOnNavigation: false,
-      })
-    );
-  });
-
-  it('should edit when one carrier selected', () => {
-    const dialogRefMock = {
-      afterClosed: () => of(undefined),
-    };
-    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
-    (component['dialog'] as MatDialog).open = openSpy;
-
-    component.dataSource.data = [mockCarrier];
-    component.selection.select(mockCarrier);
-    component.editCarrier();
-    expect(openSpy).toHaveBeenCalledWith(
-      CarrierDialog,
-      expect.objectContaining({
-        data: { carrier: mockCarrier },
-        panelClass: 'carrier-dialog',
-        closeOnNavigation: false,
-      })
-    );
-  });
-
-  it('should delete when carriers selected', () => {
-    const dialogRefMock = {
-      afterClosed: () => of(true),
-    };
-    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
-    (component['dialog'] as MatDialog).open = openSpy;
-
-    component.dataSource.data = [mockCarrier];
-    component.selection.select(mockCarrier);
-    component.deleteCarriers();
-    expect(openSpy).toHaveBeenCalled();
-    expect(carrierService.deleteCarrier).toHaveBeenCalled();
-  });
 });

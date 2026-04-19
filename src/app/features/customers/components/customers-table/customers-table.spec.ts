@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import 'zone.js/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { CustomersTable } from './customers-table';
 import { CustomerService } from '../../customer.service';
 import { CustomerDialog } from '../customer-dialog/customer-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterState, Event as RouterEvent } from '@angular/router';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { of, Subject } from 'rxjs';
@@ -242,97 +243,94 @@ describe('CustomersTable', () => {
     expect(component.canDeactivate()).toBe(true);
     confirmSpy.mockRestore();
   });
-});
 
-describe('CustomersTable - Dialog Methods', () => {
-  let component: CustomersTable;
-  let fixture: ComponentFixture<CustomersTable>;
-  let customerService: Partial<CustomerService>;
-  let snackBar: Partial<MatSnackBar>;
-  let route: ActivatedRoute;
-  let router: Partial<Router>;
-  let pendingService: Partial<PendingChangesService>;
-  let routerEvents: Subject<RouterEvent>;
-
-  const mockCustomer: Customer = {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    phoneNumber: '123-456-7890',
-    isActive: true,
-  };
-
-  beforeEach(async () => {
-    routerEvents = new Subject<RouterEvent>();
-
-    const customersSignal = signal<Customer[]>([]);
-    const loadingSignal = signal(false);
-    const errorSignal = signal<string | null>(null);
-
-    customerService = {
-      loadCustomers: jest.fn(),
-      addCustomer: jest.fn(),
-      updateCustomer: jest.fn(),
-      deleteCustomers: jest.fn(),
-      customers: customersSignal,
-      loading: loadingSignal,
-      error: errorSignal,
-    };
-
-    snackBar = {
-      open: jest.fn(),
-    };
-
-    const routeSnapshot = {
-      paramMap: { get: () => null },
-      url: [],
-      firstChild: null,
-    };
-
-    route = {
-      snapshot: routeSnapshot,
-    } as unknown as ActivatedRoute;
-
-    const routerState = {
-      snapshot: {
-        root: {
-          firstChild: null,
-          paramMap: { get: () => null },
-          url: [],
-        },
-      },
-    };
-
-    router = {
-      navigate: jest.fn(),
-      routerState: routerState as unknown as RouterState,
-      events: routerEvents.asObservable(),
-    };
-
-    pendingService = {
-      clear: jest.fn(),
-      clearActiveDialog: jest.fn(),
-      setActiveDialog: jest.fn(),
-      setPending: jest.fn(),
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [CustomersTable],
-      providers: [
-        { provide: CustomerService, useValue: customerService },
-        { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: { open: jest.fn() } },
-        { provide: ActivatedRoute, useValue: route },
-        { provide: Router, useValue: router },
-        { provide: PendingChangesService, useValue: pendingService },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CustomersTable);
-    component = fixture.componentInstance;
+  it('should show error snackbar when error occurs', fakeAsync(() => {
+    const errorSignal = customerService.error as unknown as WritableSignal<string | null>;
+    errorSignal.set('Test error message');
+    tick(100);
     fixture.detectChanges();
-  });
+    tick(100);
+    expect(snackBar.open).toHaveBeenCalledWith('Test error message', 'Close', { duration: 4000 });
+  }));
+
+  it('should add customer when add dialog returns result', fakeAsync(() => {
+    const dialogRef = {
+      afterClosed: () => of(mockCustomer),
+      close: jest.fn(),
+      componentInstance: {},
+    } as MatDialogRef<CustomerDialog>;
+    (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRef);
+
+    component.openAddDialog();
+    tick(100);
+    fixture.detectChanges();
+    tick(100);
+    expect(customerService.addCustomer).toHaveBeenCalledWith(mockCustomer);
+    expect(snackBar.open).toHaveBeenCalledWith('Customer added successfully', 'Close', { duration: 3000 });
+  }));
+
+  it('should not add customer when add dialog returns undefined', fakeAsync(() => {
+    const dialogRef = {
+      afterClosed: () => of(undefined),
+      close: jest.fn(),
+      componentInstance: {},
+    } as MatDialogRef<CustomerDialog>;
+    (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRef);
+
+    component.openAddDialog();
+    tick(100);
+    fixture.detectChanges();
+    tick(100);
+    expect(customerService.addCustomer).not.toHaveBeenCalled();
+    expect(snackBar.open).not.toHaveBeenCalledWith('Customer added successfully');
+  }));
+
+  it('should update customer when edit dialog returns result', fakeAsync(() => {
+    const dialogRef = {
+      afterClosed: () => of(mockCustomer),
+      close: jest.fn(),
+      componentInstance: {},
+    } as MatDialogRef<CustomerDialog>;
+    (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRef);
+
+    component.openEditDialog(mockCustomer);
+    tick(100);
+    fixture.detectChanges();
+    tick(100);
+    expect(customerService.updateCustomer).toHaveBeenCalledWith(mockCustomer);
+    expect(snackBar.open).toHaveBeenCalledWith('Customer updated successfully', 'Close', { duration: 3000 });
+  }));
+
+  it('should not update customer when edit dialog returns undefined', fakeAsync(() => {
+    const dialogRef = {
+      afterClosed: () => of(undefined),
+      close: jest.fn(),
+      componentInstance: {},
+    } as MatDialogRef<CustomerDialog>;
+    (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRef);
+
+    component.openEditDialog(mockCustomer);
+    tick(100);
+    fixture.detectChanges();
+    tick(100);
+    expect(customerService.updateCustomer).not.toHaveBeenCalled();
+    expect(snackBar.open).not.toHaveBeenCalledWith('Customer updated successfully');
+  }));
+
+  it('should show success snackbar after delete customers', fakeAsync(() => {
+    const dialogRef = {
+      afterClosed: () => of(true),
+      close: jest.fn(),
+    };
+    (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRef);
+
+    component.selection.select(mockCustomer);
+    component.deleteCustomers();
+    tick(100);
+    fixture.detectChanges();
+    tick(100);
+    expect(snackBar.open).toHaveBeenCalledWith('Customers deleted successfully', 'Close', { duration: 3000 });
+  }));
 
   it('should call openViewDialog', () => {
     const dialogRefMock = {

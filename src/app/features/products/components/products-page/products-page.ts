@@ -37,7 +37,6 @@ export class ProductsPage implements OnInit {
       error: err => {
         this.error.set('Failed to load products');
         this.loading.set(false);
-        console.error('Error loading products:', err);
       },
     });
   }

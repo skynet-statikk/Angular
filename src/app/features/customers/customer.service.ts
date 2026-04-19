@@ -35,7 +35,6 @@ export class CustomerService {
           this.customers.set(customers);
         }),
         catchError(err => {
-          console.error('Error loading customers:', err);
           this.error.set('Failed to load customers');
           this.loading.set(false);
           return of([]);
@@ -55,7 +54,6 @@ export class CustomerService {
           this.customers.set([...current, newCustomer]);
         }),
         catchError(err => {
-          console.error('Error adding customer:', err);
           this.error.set('Failed to add customer');
           return EMPTY;
         })
@@ -77,7 +75,6 @@ export class CustomerService {
           }
         }),
         catchError(err => {
-          console.error('Error updating customer:', err);
           this.error.set('Failed to update customer');
           return EMPTY;
         })
@@ -94,7 +91,6 @@ export class CustomerService {
           this.customers.set(current.filter(c => !ids.includes(c.id)));
         }),
         catchError(err => {
-          console.error('Error deleting customers:', err);
           this.error.set('Failed to delete customers');
           return EMPTY;
         })

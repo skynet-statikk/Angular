@@ -174,4 +174,21 @@ describe('CustomerService', () => {
 
     expect(service.error()).toBe('Failed to delete customers');
   });
+
+  it('should not update customers array when customer not found during update', () => {
+    service.loadCustomers();
+    const loadReq = httpMock.expectOne('api/customers');
+    const initialCustomers = [mockCustomer];
+    loadReq.flush(initialCustomers);
+
+    // Try to update a customer that doesn't exist in the array
+    const nonExistentCustomer: Customer = { ...mockCustomer, id: 999, firstName: 'Non Existent' };
+    service.updateCustomer(nonExistentCustomer);
+
+    const updateReq = httpMock.expectOne(`api/customers/${nonExistentCustomer.id}`);
+    updateReq.flush(nonExistentCustomer);
+
+    // The customers array should remain unchanged
+    expect(service.customers()).toEqual(initialCustomers);
+  });
 });

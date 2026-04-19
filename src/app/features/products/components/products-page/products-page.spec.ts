@@ -90,19 +90,6 @@ describe('ProductsPage', () => {
     expect(eventSpy).toHaveBeenCalled();
   });
 
-  it('should handle error when loading products', () => {
-    const error = new Error('Network error');
-    productService.loadProducts = jest.fn().mockReturnValue(throwError(() => error));
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
-      // Intentionally empty to suppress console output
-    });
-
-    component.loadProducts();
-
-    expect(productService.loadProducts).toHaveBeenCalled();
-    expect(errorSpy).toHaveBeenCalledWith('Error loading products:', error);
-  });
-
   it('should handle invalid JSON in localStorage', () => {
     localStorage.clear();
     localStorage.setItem('shoppingCart', 'invalid-json-data');

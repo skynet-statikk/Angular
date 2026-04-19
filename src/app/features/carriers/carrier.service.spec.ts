@@ -153,4 +153,21 @@ describe('CarrierService', () => {
 
     expect(service.error()).toBe('Failed to delete carrier');
   });
+
+  it('should not update carriers array when carrier not found during update', () => {
+    service.loadCarriers();
+    const loadReq = httpMock.expectOne('api/carriers');
+    const initialCarriers = [mockCarrier];
+    loadReq.flush(initialCarriers);
+
+    // Try to update a carrier that doesn't exist in the array
+    const nonExistentCarrier: Carrier = { ...mockCarrier, id: 999, name: 'Non Existent' };
+    service.updateCarrier(nonExistentCarrier);
+
+    const updateReq = httpMock.expectOne(`api/carriers/${nonExistentCarrier.id}`);
+    updateReq.flush(nonExistentCarrier);
+
+    // The carriers array should remain unchanged
+    expect(service.carriers()).toEqual(initialCarriers);
+  });
 });
