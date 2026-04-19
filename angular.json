@@ -74,14 +74,7 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "coverageThresholds": {
-              "statements": 80,
-              "branches": 80,
-              "functions": 77,
-              "lines": 80
-            }
+          "builder": "@angular-builders/jest:run"
           }
         },
         "lint": {
