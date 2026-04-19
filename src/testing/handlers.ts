@@ -53,7 +53,6 @@ export const handlers = [
   }),
 
   http.get('/api/products', () => {
-    console.log('[MSW] GET /api/products - returning', products.length, 'products');
     return HttpResponse.json(products);
   }),
 

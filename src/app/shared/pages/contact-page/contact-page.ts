@@ -28,14 +28,9 @@ export class ContactPage {
   });
 
   onSubmit() {
-    if (this.contactForm.valid) {
-      console.log('Contact form submitted:', this.contactForm.value);
-      // Here you would typically send the data to a backend service
+          // Here you would typically send the data to a backend service
       alert('Thank you for your message! We will get back to you soon.');
       this.contactForm.reset();
-    } else {
-      console.log('Form is invalid');
-    }
   }
 
   get name() {

@@ -24,7 +24,7 @@ describe('CartPage', () => {
 
   beforeEach(async () => {
     router = {
-      navigate: vi.fn(),
+      navigate: jest.fn(),
     };
 
     const routeSnapshot = {
@@ -108,7 +108,7 @@ describe('CartPage', () => {
   });
 
   it('should checkout with cart items', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.cartItems = [{ product: mockProduct, quantity: 1 }];
@@ -120,7 +120,7 @@ describe('CartPage', () => {
   });
 
   it('should not checkout when cart is empty', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.checkout();

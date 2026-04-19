@@ -17,7 +17,6 @@ export class PendingChangesGuard implements CanDeactivate<CanComponentDeactivate
   ): Observable<boolean> | Promise<boolean> | boolean {
     // Reference the unused parameter to satisfy strict-checks.
     void _component;
-    console.log('[PendingChangesGuard] canDeactivate invoked');
     // Delegate navigation confirmation to the PendingChangesService so
     // we don't rely on the component instance being available.
     return this.pending.confirmNavigation();

@@ -39,27 +39,27 @@ describe('CustomersTable', () => {
     const errorSignal = signal<string | null>(null);
 
     customerService = {
-      loadCustomers: vi.fn(),
-      addCustomer: vi.fn(),
-      updateCustomer: vi.fn(),
-      deleteCustomers: vi.fn(),
+      loadCustomers: jest.fn(),
+      addCustomer: jest.fn(),
+      updateCustomer: jest.fn(),
+      deleteCustomers: jest.fn(),
       customers: customersSignal,
       loading: loadingSignal,
       error: errorSignal,
     };
 
     snackBar = {
-      open: vi.fn(),
+      open: jest.fn(),
     };
 
     const mockDialogRef = {
       afterClosed: () => of(undefined),
       componentInstance: {},
-      close: vi.fn(),
+      close: jest.fn(),
     };
 
     dialog = {
-      open: vi.fn().mockReturnValue(mockDialogRef),
+      open: jest.fn().mockReturnValue(mockDialogRef),
     } as Partial<MatDialog>;
 
     const routeSnapshot = {
@@ -83,16 +83,16 @@ describe('CustomersTable', () => {
     };
 
     router = {
-      navigate: vi.fn(),
+      navigate: jest.fn(),
       routerState: routerState as unknown as RouterState,
       events: routerEvents.asObservable(),
     };
 
     pendingService = {
-      clear: vi.fn(),
-      clearActiveDialog: vi.fn(),
-      setActiveDialog: vi.fn(),
-      setPending: vi.fn(),
+      clear: jest.fn(),
+      clearActiveDialog: jest.fn(),
+      setActiveDialog: jest.fn(),
+      setPending: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -172,32 +172,32 @@ describe('CustomersTable', () => {
   });
 
   it('should open view dialog', () => {
-    vi.spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
     component.viewCustomer(mockCustomer);
     expect(router.navigate).toHaveBeenCalledWith(['/customers', mockCustomer.id]);
   });
 
   it('should open add dialog', () => {
-    vi.spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
     component.addCustomer();
     expect(router.navigate).toHaveBeenCalledWith(['/customers/new']);
   });
 
   it('should edit selected customer', () => {
-    vi.spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
     component.selection.select(mockCustomer);
     component.editCustomer();
     expect(router.navigate).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'edit']);
   });
 
   it('should not edit when no customer selected', () => {
-    vi.spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
     component.editCustomer();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should not edit when multiple customers selected', () => {
-    vi.spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
     component.selection.select(mockCustomer);
     component.selection.select({ ...mockCustomer, id: 2 });
     component.editCustomer();
@@ -210,7 +210,7 @@ describe('CustomersTable', () => {
 
   it('should return true from canDeactivate when no unsaved changes', () => {
     const mockDialogRef = {
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {},
     };
     (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
@@ -218,9 +218,9 @@ describe('CustomersTable', () => {
   });
 
   it('should return false from canDeactivate when has unsaved changes and user cancels', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
     const mockDialogRef = {
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {
         hasUnsavedChanges: () => true,
       },
@@ -231,9 +231,9 @@ describe('CustomersTable', () => {
   });
 
   it('should return true from canDeactivate when has unsaved changes and user confirms', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
     const mockDialogRef = {
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {
         hasUnsavedChanges: () => true,
       },
@@ -271,17 +271,17 @@ describe('CustomersTable - Dialog Methods', () => {
     const errorSignal = signal<string | null>(null);
 
     customerService = {
-      loadCustomers: vi.fn(),
-      addCustomer: vi.fn(),
-      updateCustomer: vi.fn(),
-      deleteCustomers: vi.fn(),
+      loadCustomers: jest.fn(),
+      addCustomer: jest.fn(),
+      updateCustomer: jest.fn(),
+      deleteCustomers: jest.fn(),
       customers: customersSignal,
       loading: loadingSignal,
       error: errorSignal,
     };
 
     snackBar = {
-      open: vi.fn(),
+      open: jest.fn(),
     };
 
     const routeSnapshot = {
@@ -305,16 +305,16 @@ describe('CustomersTable - Dialog Methods', () => {
     };
 
     router = {
-      navigate: vi.fn(),
+      navigate: jest.fn(),
       routerState: routerState as unknown as RouterState,
       events: routerEvents.asObservable(),
     };
 
     pendingService = {
-      clear: vi.fn(),
-      clearActiveDialog: vi.fn(),
-      setActiveDialog: vi.fn(),
-      setPending: vi.fn(),
+      clear: jest.fn(),
+      clearActiveDialog: jest.fn(),
+      setActiveDialog: jest.fn(),
+      setPending: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -322,7 +322,7 @@ describe('CustomersTable - Dialog Methods', () => {
       providers: [
         { provide: CustomerService, useValue: customerService },
         { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: { open: vi.fn() } },
+        { provide: MatDialog, useValue: { open: jest.fn() } },
         { provide: ActivatedRoute, useValue: route },
         { provide: Router, useValue: router },
         { provide: PendingChangesService, useValue: pendingService },
@@ -337,10 +337,10 @@ describe('CustomersTable - Dialog Methods', () => {
   it('should call openViewDialog', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {},
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.openViewDialog(mockCustomer);
@@ -360,10 +360,10 @@ describe('CustomersTable - Dialog Methods', () => {
   it('should call openEditDialog', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {},
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.openEditDialog(mockCustomer);
@@ -383,10 +383,10 @@ describe('CustomersTable - Dialog Methods', () => {
   it('should call openAddDialog', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
-      close: vi.fn(),
+      close: jest.fn(),
       componentInstance: {},
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.openAddDialog();
@@ -405,9 +405,9 @@ describe('CustomersTable - Dialog Methods', () => {
   it('should call deleteCustomers and show confirmation dialog', () => {
     const dialogRefMock = {
       afterClosed: () => of(true),
-      close: vi.fn(),
+      close: jest.fn(),
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.selection.select(mockCustomer);
@@ -418,9 +418,9 @@ describe('CustomersTable - Dialog Methods', () => {
   it('should not delete customers when user cancels', () => {
     const dialogRefMock = {
       afterClosed: () => of(false),
-      close: vi.fn(),
+      close: jest.fn(),
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.selection.select(mockCustomer);

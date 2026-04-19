@@ -8,12 +8,12 @@ describe('PendingChangesService', () => {
   beforeEach(() => {
     service = new PendingChangesService();
     mockDialogRef = {
-      close: vi.fn(),
+      close: jest.fn(),
     };
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('should be created', () => {
@@ -32,7 +32,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should set pending to true and add event listener', () => {
-    const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+    const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
     service.setPending(true);
     expect(service.isPending()).toBe(true);
     expect(addEventListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function));
@@ -40,7 +40,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should set pending to false and remove event listener', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
     service.setPending(true);
     service.setPending(false);
     expect(service.isPending()).toBe(false);
@@ -49,7 +49,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should clear pending state', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
     service.setPending(true);
     service.clear();
     expect(service.isPending()).toBe(false);
@@ -58,7 +58,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should return true when confirmNavigation is called with no pending changes', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
     const result = service.confirmNavigation();
     expect(result).toBe(true);
     expect(removeEventListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function));
@@ -66,8 +66,8 @@ describe('PendingChangesService', () => {
   });
 
   it('should return true when confirmNavigation is called with pending changes and user confirms', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
     service.setPending(true);
     service.setActiveDialog(mockDialogRef as MatDialogRef<unknown>);
     const result = service.confirmNavigation();
@@ -80,7 +80,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should return false when confirmNavigation is called with pending changes and user cancels', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
     service.setPending(true);
     const result = service.confirmNavigation();
     expect(result).toBe(false);
@@ -90,7 +90,7 @@ describe('PendingChangesService', () => {
   });
 
   it('should handle dialog close error gracefully', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
     const errorDialogRef: Partial<MatDialogRef<unknown>> = {
       close: () => {
         throw new Error('Dialog already closed');
@@ -104,8 +104,8 @@ describe('PendingChangesService', () => {
   });
 
   it('should handle dialog close error gracefully when pending', () => {
-    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
     const errorDialogRef: Partial<MatDialogRef<unknown>> = {
       close: () => {
         throw new Error('Dialog already closed');

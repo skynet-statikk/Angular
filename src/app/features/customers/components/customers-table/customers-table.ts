@@ -106,12 +106,6 @@ export class CustomersTable implements OnInit, AfterViewInit {
   readonly routeEffect = effect(() => {
     const rs = this.routeState();
     const customers = this.customers();
-    console.log(
-      '[CustomersTable] routeEffect run, routeState=',
-      rs,
-      'dialogOpen=',
-      this.dialogOpen()
-    );
 
     if (this.dialogOpen()) return;
 

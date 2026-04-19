@@ -12,12 +12,12 @@ describe('CustomerDialog', () => {
 
   beforeEach(async () => {
     dialogRefSpy = {
-      close: vi.fn(),
+      close: jest.fn(),
       disableClose: false,
     };
     pendingService = {
-      setPending: vi.fn(),
-      clear: vi.fn(),
+      setPending: jest.fn(),
+      clear: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('CustomerDialog', () => {
   });
 
   it('should not close dialog on invalid save', () => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     component.save();
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
   });

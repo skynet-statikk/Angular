@@ -42,7 +42,6 @@ export class PendingChangesService {
   // Called by the router guard to confirm navigation. If the user accepts,
   // clear the pending flag and close any open dialog that was registered.
   confirmNavigation(): boolean {
-    console.log('[PendingChangesService] confirmNavigation called; pending=', this._pending);
     // If nothing pending, still close any registered dialog and allow navigation
     if (!this._pending) {
       try {
@@ -56,7 +55,6 @@ export class PendingChangesService {
     }
 
     const ok = window.confirm('You have unsaved changes. Leave without saving?');
-    console.log('[PendingChangesService] user response:', ok);
     if (ok) {
       this._pending = false;
       try {

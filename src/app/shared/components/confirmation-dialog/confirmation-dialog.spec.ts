@@ -9,7 +9,7 @@ describe('ConfirmationDialog', () => {
 
   beforeEach(async () => {
     dialogRefSpy = {
-      close: vi.fn(),
+      close: jest.fn(),
     };
 
     await TestBed.configureTestingModule({

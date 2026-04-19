@@ -30,17 +30,17 @@ describe('CarriersPage', () => {
     const errorSignal = signal<string | null>(null);
 
     carrierService = {
-      loadCarriers: vi.fn(),
-      addCarrier: vi.fn(),
-      updateCarrier: vi.fn(),
-      deleteCarrier: vi.fn(),
+      loadCarriers: jest.fn(),
+      addCarrier: jest.fn(),
+      updateCarrier: jest.fn(),
+      deleteCarrier: jest.fn(),
       carriers: carriersSignal,
       loading: loadingSignal,
       error: errorSignal,
     };
 
     snackBar = {
-      open: vi.fn(),
+      open: jest.fn(),
     };
 
     const mockDialogRef = {
@@ -48,7 +48,7 @@ describe('CarriersPage', () => {
     };
 
     dialog = {
-      open: vi.fn().mockReturnValue(mockDialogRef),
+      open: jest.fn().mockReturnValue(mockDialogRef),
     } as Partial<MatDialog>;
 
     await TestBed.configureTestingModule({
@@ -174,17 +174,17 @@ describe('CarriersPage - Dialog Methods', () => {
     const errorSignal = signal<string | null>(null);
 
     carrierService = {
-      loadCarriers: vi.fn(),
-      addCarrier: vi.fn(),
-      updateCarrier: vi.fn(),
-      deleteCarrier: vi.fn(),
+      loadCarriers: jest.fn(),
+      addCarrier: jest.fn(),
+      updateCarrier: jest.fn(),
+      deleteCarrier: jest.fn(),
       carriers: carriersSignal,
       loading: loadingSignal,
       error: errorSignal,
     };
 
     snackBar = {
-      open: vi.fn(),
+      open: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -192,7 +192,7 @@ describe('CarriersPage - Dialog Methods', () => {
       providers: [
         { provide: CarrierService, useValue: carrierService },
         { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: { open: vi.fn() } },
+        { provide: MatDialog, useValue: { open: jest.fn() } },
       ],
     }).compileComponents();
 
@@ -205,7 +205,7 @@ describe('CarriersPage - Dialog Methods', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.addCarrier();
@@ -223,7 +223,7 @@ describe('CarriersPage - Dialog Methods', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.dataSource.data = [mockCarrier];
@@ -243,7 +243,7 @@ describe('CarriersPage - Dialog Methods', () => {
     const dialogRefMock = {
       afterClosed: () => of(true),
     };
-    const openSpy = vi.fn().mockReturnValue(dialogRefMock);
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
     component.dataSource.data = [mockCarrier];

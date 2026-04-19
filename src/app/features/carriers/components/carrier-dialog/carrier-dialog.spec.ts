@@ -19,7 +19,7 @@ describe('CarrierDialog', () => {
 
   beforeEach(async () => {
     dialogRefSpy = {
-      close: vi.fn(),
+      close: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -56,14 +56,14 @@ describe('CarrierDialog', () => {
   });
 
   it('should not close dialog on invalid submit', () => {
-    dialogRefSpy.close = vi.fn();
+    dialogRefSpy.close = jest.fn();
     component.ngOnInit();
     component.onSubmit();
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
   });
 
   it('should close dialog on cancel', () => {
-    dialogRefSpy.close = vi.fn();
+    dialogRefSpy.close = jest.fn();
     component.onCancel();
     expect(dialogRefSpy.close).toHaveBeenCalled();
   });
@@ -107,7 +107,7 @@ describe('CarrierDialog - Edit Mode', () => {
 
   beforeEach(async () => {
     dialogRefSpy = {
-      close: vi.fn(),
+      close: jest.fn(),
     };
 
     await TestBed.configureTestingModule({

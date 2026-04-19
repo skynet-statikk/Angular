@@ -24,7 +24,7 @@ describe('ProductsPage', () => {
     localStorage.clear();
 
     productService = {
-      loadProducts: vi.fn().mockReturnValue(of([mockProduct])),
+      loadProducts: jest.fn().mockReturnValue(of([mockProduct])),
     };
 
     await TestBed.configureTestingModule({
@@ -57,7 +57,7 @@ describe('ProductsPage', () => {
 
   it('should add product to cart', () => {
     localStorage.clear();
-    vi.spyOn(window, 'alert').mockImplementation(() => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.addToCart(mockProduct);
@@ -71,7 +71,7 @@ describe('ProductsPage', () => {
   it('should increase quantity when adding existing product to cart', () => {
     localStorage.clear();
     localStorage.setItem('shoppingCart', JSON.stringify([{ product: mockProduct, quantity: 1 }]));
-    vi.spyOn(window, 'alert').mockImplementation(() => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.addToCart(mockProduct);
@@ -82,8 +82,8 @@ describe('ProductsPage', () => {
 
   it('should dispatch storage event after adding to cart', () => {
     localStorage.clear();
-    const eventSpy = vi.spyOn(window, 'dispatchEvent');
-    vi.spyOn(window, 'alert').mockImplementation(() => {
+    const eventSpy = jest.spyOn(window, 'dispatchEvent');
+    jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.addToCart(mockProduct);
@@ -92,8 +92,8 @@ describe('ProductsPage', () => {
 
   it('should handle error when loading products', () => {
     const error = new Error('Network error');
-    productService.loadProducts = vi.fn().mockReturnValue(throwError(() => error));
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+    productService.loadProducts = jest.fn().mockReturnValue(throwError(() => error));
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
       // Intentionally empty to suppress console output
     });
 
@@ -106,7 +106,7 @@ describe('ProductsPage', () => {
   it('should handle invalid JSON in localStorage', () => {
     localStorage.clear();
     localStorage.setItem('shoppingCart', 'invalid-json-data');
-    vi.spyOn(window, 'alert').mockImplementation(() => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
 
