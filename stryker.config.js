@@ -13,4 +13,5 @@ module.exports = {
   coverageAnalysis: 'off',
   tsconfigFile: 'tsconfig.json',
   cleanTempDir: 'always',
+  incremental: 'true'
 };
