@@ -18,3 +18,8 @@
 - Prettier
 - `angular-eslint`
 - EditorConfig
+
+### Infra
+
+- Docker
+- Github Actions
