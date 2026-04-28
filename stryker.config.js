@@ -18,10 +18,6 @@ module.exports = {
     break: 82
   },
   dashboard: {
-    project: 'github.com/michaeltg17/Angular',
-    module: 'angular-app',
-    version: process.env.GITHUB_SHA || process.env.BRANCH_NAME || 'local',
-    baseUrl: 'https://dashboard.stryker-mutator.io',
     reportType: 'full'
   }
 };
