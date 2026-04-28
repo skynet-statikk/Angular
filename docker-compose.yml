@@ -1,9 +1,10 @@
 services:
   angular:
-    image: ghcr.io/michaeltg17/angular:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: angular:latest
     container_name: angular
     ports:
-      - "4200:80"
-    environment:
-      - NODE_ENV=development
+      - "4201:80"
     restart: unless-stopped
