@@ -61,7 +61,7 @@ export interface ColumnDef {
           matInput
           [value]="filterValue"
           (input)="onFilterChange($event)"
-          placeholder="Filter rows"
+          placeholder="Search"
         />
       </mat-form-field>
 
