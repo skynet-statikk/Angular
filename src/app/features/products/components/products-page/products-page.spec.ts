@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ProductsPage } from './products-page';
 import { ProductService } from '../../product.service';
 import { CartService } from '../../../cart/cart.service';
@@ -8,12 +8,16 @@ import { delay } from 'rxjs/operators';
 import { Product } from '../../product';
 import { ActivatedRoute, Router } from '@angular/router';
 
+class MatSnackBarStub {
+  open = jest.fn();
+}
+
 describe('ProductsPage', () => {
   let component: ProductsPage;
   let fixture: ComponentFixture<ProductsPage>;
   let productService: Partial<ProductService>;
   let cartService: Partial<CartService>;
-  let snackBar: MatSnackBar;
+  let snackBarStub: MatSnackBarStub;
 
   const mockProduct: Product = {
     id: 1,
@@ -25,8 +29,6 @@ describe('ProductsPage', () => {
     rating: { rate: 4.5, count: 10 },
   };
 
-  let snackBarOpenSpy: jest.SpyInstance;
-
   beforeEach(async () => {
     productService = {
       loadProducts: jest.fn().mockReturnValue(of([mockProduct])),
@@ -36,15 +38,14 @@ describe('ProductsPage', () => {
       addToCart: jest.fn(),
     };
 
+    snackBarStub = new MatSnackBarStub();
+
     await TestBed.configureTestingModule({
       imports: [ProductsPage],
       providers: [
         { provide: ProductService, useValue: productService },
         { provide: CartService, useValue: cartService },
-        {
-          provide: MatSnackBar,
-          useClass: MatSnackBarStub,
-        },
+        { provide: MatSnackBar, useValue: snackBarStub },
         { provide: ActivatedRoute, useValue: { snapshot: { data: {} }, paramMap: {} } },
         {
           provide: Router,
@@ -55,8 +56,6 @@ describe('ProductsPage', () => {
 
     fixture = TestBed.createComponent(ProductsPage);
     component = fixture.componentInstance;
-    snackBar = TestBed.inject(MatSnackBar) as MatSnackBar;
-    snackBarOpenSpy = jest.spyOn(snackBar, 'open');
     fixture.detectChanges();
   });
 
@@ -130,7 +129,7 @@ describe('ProductsPage', () => {
 
   it('should show snackbar when adding to cart', () => {
     component.addToCart(mockProduct);
-    expect(snackBarOpenSpy).toHaveBeenCalledWith('Added Test Product to cart!', 'Close', {
+    expect(snackBarStub.open).toHaveBeenCalledWith(`Added ${mockProduct.title} to cart!`, 'Close', {
       duration: 3000,
     });
   });
@@ -163,7 +162,3 @@ describe('ProductsPage', () => {
     expect(freshComponent.error()).toBeNull();
   });
 });
-
-class MatSnackBarStub {
-  open = jest.fn();
-}
