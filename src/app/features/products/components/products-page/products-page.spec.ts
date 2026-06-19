@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ProductsPage } from './products-page';
 import { ProductService } from '../../product.service';
 import { CartService } from '../../../cart/cart.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Product } from '../../product';
