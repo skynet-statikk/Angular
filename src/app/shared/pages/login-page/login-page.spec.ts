@@ -149,7 +149,7 @@ describe('LoginPage', () => {
   }));
 
   it('should set message when only password is provided', fakeAsync(() => {
-    component.credentials = { username: 'admin', password: 'adm' + 'in' + '123' };
+    component.credentials = { username: '', password: 'adm' + 'in' + '123' };
     component.onLogin();
     tick(1500);
     expect(component.message).toBe('Please enter both username and password');
